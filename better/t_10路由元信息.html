@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>路由元信息</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+/*
+
+*/
+	</script>
+</head>
+<body>
+<div id="app">
+  <!-- 渲染最高级路由匹配到的组件 -->
+  	<router-view></router-view>
+</div>
+<script>
+	const router = new VueRouter({
+	  // mode: 'history',
+	  routes: [
+	    {
+	      path: '/a',
+	      //redirect: 'matisha001@sina.com'
+	    },
+	    {
+	    	path:"/matisha001@sina.com",
+	    	component: { template: '<div>222222222222222222222222</div>' },
+	    	beforeEnter: (to, from, next) => {
+
+	    	}
+	    	alias: '/a'
+	    },
+	    { path: '*', component: {template: '<div>404</div>'} }
+	  ]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+	console.log(router.beforeEach)
+	/*
+	router.beforeEach((to, from, next) => {})
+	router.afterEach(route => { })
+	*/
+</script>
+</body>
+</html>
