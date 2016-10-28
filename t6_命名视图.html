@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>命名视图</title>
+	<script src="vue2.js"></script>
+	<script src="vue-router.js"></script>
+	<script>
+/*
+同时（同级）展示多个视图有 sidebar（侧导航） 和 main（主内容）两个视图。
+可以在界面中拥有多个单独命名的视图，而不是只有一个单独的出口。
+如果 router-view 没有设置名字，那么默认为 default。
+一个视图使用一个组件渲染，因此对于同个路由，多个视图就需要多个组件。
+确保正确使用 components 配置（带上 s）：
+*/	
+	</script>
+</head>
+<body>
+<div id="app">
+  <!-- 渲染最高级路由匹配到的组件 -->
+  	<router-view class="view one"></router-view>
+	<router-view class="view two" name="a"></router-view>
+	<router-view class="view three" name="b"></router-view>
+</div>
+<script>
+	const UserHome = { template: '<div>Home</div>' }
+	const Foo = { template: 
+		'<div>\
+			<h2>Foo</h2>\
+		</div>' 
+	}
+	const Bar = { template: '<div>Bar</div>' }
+	const router = new VueRouter({
+	  routes: [
+	    {
+	      path: '/',
+	      components: {
+	        default: Foo,
+	        a: Bar,
+	        b: UserHome
+	      }
+	    }
+	  ]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+</script>
+</body>
+</html>
