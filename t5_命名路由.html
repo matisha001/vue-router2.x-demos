@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>命名路由</title>
+	<script src="vue2.js"></script>
+	<script src="vue-router.js"></script>
+	<script>
+/*
+通过一个名称来标识一个路由显得更方便一些，特别是在链接一个路由，或者是执行一些跳转的时候。
+在创建 Router 实例的时候，在 routes 配置中给某个路由设置名称。
+<router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>的等效写法
+router.push({ name: 'user', params: { userId: 123 }})
+*/	
+	</script>
+</head>
+<body>
+<div id="app">
+  <p>
+    <router-link :to="{ name: 'user', params: { userId: 123 }}">/user/matisha</router-link>
+    <router-link to="/user/matisha/a" replace>/user/matisha/a</router-link>
+    <router-link to="/user/matisha/a/b">/user/matisha/a/b</router-link>
+    <router-link to="/user/matisha/">/user/matisha/</router-link>
+    <router-link to="/b">/b</router-link>
+    <!-- <a onclick="push()">email me</a> -->
+  </p>
+  <!-- 渲染最高级路由匹配到的组件 -->
+  <router-view></router-view>
+</div>
+<script>
+	function push(){
+		router.push({ name: 'user', params: { id: 123 }})
+	}
+	const User = {
+	  template: `
+	    <div class="user">
+	      <h2>主路由 {{ $route.params.id }}</h2>
+	      <router-view></router-view>
+	    </div>
+	  `
+	}
+	const UserHome = { template: '<div>Home</div>' }
+	const Foo = { template: 
+		'<div>\
+			<h2>子路由</h2>\
+			<router-view></router-view>\
+		</div>' 
+	}
+	const Bar = { template: '<div>这又是路由</div>' }
+	const router = new VueRouter({
+	  	routes : [
+		  { 
+		  	path: '/user/:id', 
+		  	name: 'user',
+		  	component: User,
+		  	children:[
+		  		{
+		  			path: 'a',
+		  			component: Foo,
+		  			children:[
+		  				{
+		  					path: "b",
+		  					component: Bar
+		  				}
+		  			]
+		  		},
+		  		{
+		  			path: "/b",
+		  			component: Bar
+		  		},
+		  		{
+		  			path: "",
+		  			component: UserHome
+		  		},
+		  	]
+		  }
+		]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+</script>
+</body>
+</html>

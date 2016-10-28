@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>编程式的导航</title>
+	<script src="vue2.js"></script>
+	<script src="vue-router.js"></script>
+	<script>
+/*router.push(location)
+除了使用 <a> 创建 a 标签来定义导航链接，我们还可以借助 router 的实例方法，通过编写代码来实现。
+router.push(location)
+想要导航到不同的 URL，则使用 router.push 方法。这个方法会向 hisonclickry 栈添加一个新的记录，
+当用户点击浏览器后退按钮时，则回到之前的 URL。
+这种写法对应vue-router0.7中的router。go(path).
+当你点击 <a> 时，这个方法会在内部调用，所以说，点击 <a :onclick="..."> 等同于调用 router.push(...)。
+该方法的参数可以是一个字符串路径，或者一个描述地址的对象。
+router.push('home')// 字符串
+router.push({ path: 'home' })// 对象
+router.push({ name: 'user', params: { userId: 123 }})// 命名的路由
+router.push({ path: 'register', query: { plan: 'private' }})// 带查询参数，变成 /register?plan=private
+*/	
+/*router.replace(location)
+跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
+这种写法对应vue-router0.7中的写法并没有改变
+*/
+/*router.go(n)
+这个方法的参数是一个整数，意思是在 history 记录中向前或者后退多少步，类似 window.history.go(n)。
+这里的router.go(n)与vue-router0.7中的写法完全不同。
+*/
+/*
+vue-router 的导航方法 （push、 replace、 go） 在各类路由模式（history、 hash 和 abstract）下表现一致。
+*/
+	</script>
+</head>
+<body>
+<div id="app">
+  <p>
+    <a onclick="push('/user/matisha')">push</a>
+    <a onclick="replace('/user/matisha/a')">replace</a>
+    <a onclick="go(2)">go(2)</a>
+    <a onclick="push('/user/matisha/')">/user/matisha/</a>
+    <a onclick="push('/b')">/b</a>
+  </p>
+  <!-- 渲染最高级路由匹配到的组件 -->
+  <router-view></router-view>
+</div>
+<script>
+function push(location){
+	router.push(location)
+}
+function replace(location){
+	router.replace(location)
+}
+function go(n){
+	router.go(n)
+}
+	const User = {
+	  template: `
+	    <div class="user">
+	      <h2>主路由 {{ $route.params.id }}</h2>
+	      <router-view></router-view>
+	    </div>
+	  `
+	}
+	const UserHome = { template: '<div>Home</div>' }
+	const Foo = { template: 
+		'<div>\
+			<h2>子路由</h2>\
+			<router-view></router-view>\
+		</div>' 
+	}
+	const Bar = { template: '<div>这又是路由</div>' }
+	const router = new VueRouter({
+	  	routes : [
+		  { path: '/user/:id', component: User,
+		  	children:[
+		  		{
+		  			path: 'a',
+		  			component: Foo,
+		  			children:[
+		  				{
+		  					path: "b",
+		  					component: Bar
+		  				}
+		  			]
+		  		},
+		  		{
+		  			path: "/b",
+		  			component: Bar
+		  		},
+		  		{
+		  			path: "",
+		  			component: UserHome
+		  		},
+		  	]
+		  }
+		]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+</script>
+</body>
+</html>

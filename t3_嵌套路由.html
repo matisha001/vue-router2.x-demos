@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>嵌套路由</title>
+	<script src="vue2.js"></script>
+	<script src="vue-router.js"></script>
+	<script>
+/*
+一个被渲染组件同样可以包含自己的嵌套 <router-view>.
+要在嵌套的出口中渲染组件，需要在 VueRouter 的参数中使用 children 配置.
+以 / 开头的嵌套路径会被当作根路径。使用嵌套组件而无须设置嵌套的路径。
+children 配置就是像 routes 配置一样的路由配置数组.
+当你访问 的/user/foo 不存在时，User 的出口是不会渲染任何东西，没有匹配到合适的子路由。
+如果你想要渲染点什么，可以提供一个空的子路由
+*/	
+	</script>
+</head>
+<body>
+<div id="app">
+  <p>
+    <router-link to="/user/matisha">/user/matisha</router-link>
+    <router-link to="/user/matisha/a">/user/matisha/a</router-link>
+    <router-link to="/user/matisha/a/b">/user/matisha/a/b</router-link>
+    <router-link to="/user/matisha/">/user/matisha/</router-link>
+    <router-link to="/b">/b</router-link>
+  </p>
+  <!-- 渲染最高级路由匹配到的组件 -->
+  <router-view></router-view>
+</div>
+<script>
+	const User = {
+	  template: `
+	    <div class="user">
+	      <h2>主路由 {{ $route.params.id }}</h2>
+	      <router-view></router-view>
+	    </div>
+	  `
+	}
+	const UserHome = { template: '<div>Home</div>' }
+	const Foo = { template: 
+		'<div>\
+			<h2>子路由</h2>\
+			<router-view></router-view>\
+		</div>' 
+	}
+	const Bar = { template: '<div>这又是路由</div>' }
+	const router = new VueRouter({
+	  	routes : [
+		  { path: '/user/:id', component: User,
+		  	children:[
+		  		{
+		  			path: 'a',
+		  			component: Foo,
+		  			children:[
+		  				{
+		  					path: "b",
+		  					component: Bar
+		  				}
+		  			]
+		  		},
+		  		{
+		  			path: "/b",
+		  			component: Bar
+		  		},
+		  		{
+		  			path: "",
+		  			component: UserHome
+		  		},
+		  	]
+		  }
+		]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+</script>
+</body>
+</html>
