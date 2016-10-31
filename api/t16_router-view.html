@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>router-view</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+	/*
+<router-view> 组件是一个 functional 组件，渲染路径匹配到的视图组件。<router-view> 渲染的组件还可以内嵌自己的 <router-view>，根据嵌套路径，渲染嵌套组件。
+name 类型: string 默认值: "default"
+如果 <router-view>设置了名称，则会渲染对应的路由配置中 components 下的相应组件。	
+其他属性（非 router-view 使用的属性）都直接传给渲染的组件， 很多时候，每个路由的数据都是包含在路由参数中。
+因为它也是个组件，所以可以配合 <transition> 和 <keep-alive> 使用。如果两个结合一起用，要确保在内层使用 <keep-alive>：
+<transition>
+  <keep-alive>
+    <router-view></router-view>
+  </keep-alive>
+</transition>
+	*/
+	</script>
+</head>
+<body>
+	<div id="app">
+    <router-link to="/foo">Go to Foo</router-link>
+    <router-link :to="{ path: '/bar'}" append>Go to Bar</router-link>
+	<router-link to="/login">Go to login</router-link>
+	<router-link to="/login" tag="li">Go to Li</router-link>
+	<router-link to="/" exact>///////</router-link>
+	<router-link tag="li" to="/foo">
+	  <a>/foo</a>
+	</router-link>
+	<router-view></router-view>
+	</div>
+	<script>
+	const Foo = { template: '<div>Foo<router-view></router-view></div>' }
+	const Bar = { template: '<div>Bar</div>' }
+	const Login = { template: '<div>login</div>' }
+	const router = new VueRouter({
+	  routes: [
+	    {
+	      path: '/foo',
+	      component: Foo,
+	      children: [
+	        {
+	          path: 'bar',
+	          component: Bar
+	        }
+	      ]
+	    },
+	    {
+	    	path:"/login",
+	    	component: Login 
+	    }
+	  ]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+	</script>
+</body>
+</html>

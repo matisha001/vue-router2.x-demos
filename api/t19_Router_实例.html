@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Router_实例</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+/*属性
+router.app
+类型: Vue instance   配置了 router 的 Vue 根实例。
+router.mode  类型: string  路由使用的 模式。
+router.currentRoute 类型: Route
+当前路由对应的 路由信息对象.*/
+/*方法
+router.beforeEach(guard)
+router.afterEach(hook)
+增加全局的导航钩子。参考 导航钩子.
+router.push(location)
+router.replace(location)
+router.go(n)
+router.back()
+router.forward()
+动态的导航到一个新 url。参考 编程式导航.
+router.getMatchedComponents()
+返回当前路由匹配的组件数组（是数组的定义/构造类，不是实例）。通常在服务端渲染的数据预加载时时候。
+*/
+	</script>
+</head>
+<body>
+	<div id="app">
+    <router-link to="/foo/matisha">Go to Foo</router-link>
+    <router-link :to="{ path: '/foo/matisha/bar'}" append>Go to Bar</router-link>
+	<router-link to="/login">Go to login</router-link>
+	<router-view></router-view>
+	</div>
+	<script>
+	// const Foo = { template: '<div>{{$route.path}}<router-view></router-view><br>{{$route.params |json}}<br>\
+	// {{$route.query |json}}<br>{{$route.hash}}<br>{{$route.fullPath}}</div>' }
+	const Foo ={ template:'<div>{{$route }}</div>'}
+	const Bar = { template: '<div>Bar{{$route.hash}}</div>' }
+	const Login = { template: '<div>login{{$route}}</div>' }
+	const router = new VueRouter({
+	  routes: [
+	    {
+	      path: '/foo/:id',
+	      component: Foo,
+	      name:'twdnb',
+	      children: [
+	        {
+	          path: 'bar',
+	          component: Bar
+	        }
+	      ]
+	    },
+	    {
+	    	path:"/login",
+	    	component: Login 
+	    }
+	  ],
+	  // mode:"history",
+	  base:"/matisha/",
+	  linkActiveClass:"matisha"
+	})
+	console.log(router.back)
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+	</script>
+</body>
+</html>

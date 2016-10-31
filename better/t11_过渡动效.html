@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>过渡动效</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+/*
+<router-view> 是基本的动态组件，所以我们可以用 <transition> 组件给它添加一些过渡效果：
+<transition>
+  <router-view></router-view>
+</transition>
+*/
+/*单个路由的过渡
+每个路由组件有各自的过渡效果，可以在各路由组件内使用 <transition> 并设置不同的 name。
+const Foo = {
+  template: `
+    <transition name="slide">
+      <div class="foo">...</div>
+    </transition>
+  `
+}
+*/
+/*基于路由的动态过渡
+基于当前路由与目标路由的变化关系，动态设置过渡效果.
+<!-- 使用动态的 transition name -->
+<transition :name="transitionName">
+  <router-view></router-view>
+</transition>
+watch: {
+  '$route' (to, from) {
+    const toDepth = to.path.split('/').length
+    const fromDepth = from.path.split('/').length
+    this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+  }
+}
+*/
+	</script>
+</head>
+<body>
+<div id="app">
+  <p>
+    <router-link to="/foo">单个路由的过渡</router-link>
+    <router-link to="/bar">Go to Bar</router-link>
+    <router-link to="/bar">基于路由的动态过渡</router-link>
+  </p>
+  <router-view></router-view>
+</div>
+<script>
+	const Foo = {
+	  template: `
+	    <transition name="slide">
+	      <div class="foo">foo</div>
+	      <router-view></router-view>
+	    </transition>
+	  `
+	}
+	const Bar = {
+	  template: `
+	    <transition name="fade">
+	      <div class="bar">bar</div>
+	    </transition>
+	  `
+	}
+	const Test = {
+	  template: `
+		<transition :name="transitionName">
+		  <router-view></router-view>
+		</transition>
+	  `
+	}
+	const router = new VueRouter({
+	  routes: [
+	    {
+	      path: '/foo',
+	      component: Foo
+	    },
+	    {
+	      path: '/bar',
+	      component: Bar	    	
+	    },
+	    ,
+	    {
+	      path: '/test',
+	      component: Test	    	
+	    }
+	  ]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+</script>
+</body>
+</html>

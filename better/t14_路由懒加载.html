@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>路由懒加载</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+/*
+不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件.
+要做的就是把路由对应的组件定义成异步组件：
+const Foo = resolve => {
+  // require.ensure 是 Webpack 的特殊语法，用来设置 code-split point （代码分块）
+  require.ensure(['./Foo.vue'], () => {
+    resolve(require('./Foo.vue'))
+  })
+}
+*/
+/*
+使用 AMD 风格的 require：
+const Foo = resolve => require(['./Foo.vue'], resolve)
+不需要改变任何路由配置，跟之前一样使用 Foo
+const router = new VueRouter({
+  routes: [
+    { path: '/foo', component: Foo }
+  ]
+})
+*/
+/*
+把组件按组分块
+把某个路由下的所有组件都打包在同个异步 chunk 中。只需要 给 chunk 命名，提供 require.ensure 第三个参数作为 chunk 的名称
+const Foo = r => require.ensure([], () => r(require('./Foo.vue')), 'group-foo')
+const Bar = r => require.ensure([], () => r(require('./Bar.vue')), 'group-foo')
+const Baz = r => require.ensure([], () => r(require('./Baz.vue')), 'group-foo')
+Webpack 将相同 chunk 下的所有异步模块打包到一个异步块里面 —— 这也意味着我们无须明确列出 require.ensure 的依赖（传空数组就行）。
+*/
+	</script>
+</head>
+<body>
+<div id="app">
+  <!-- 渲染最高级路由匹配到的组件 -->
+    <router-link to="/foo">Go to Foo</router-link>
+    <router-link to="/foo/bar">Go to Bar</router-link>
+  	<router-view></router-view>
+</div>
+<script>
+
+	const Home = { template: '<div>home</div>' }
+	const Foo = { template: '<div>foo</div>' }
+	const Bar = {
+	  template: `
+	    <div>
+	      bar
+	      <div style="height:500px"></div>
+	      <p id="anchor">Anchor</p>
+	    </div>
+	  `
+	}
+	const scrollBehavior = (to, from, savedPosition) => {
+	  if (savedPosition) {
+	    // savedPosition is only available for popstate navigations.
+	    return savedPosition
+	  } else {
+	    const position = {}
+	    // new navigation.
+	    // scroll to anchor by returning the selector
+	    if (to.hash) {
+	      position.selector = to.hash
+	    }
+	    // check if any matched route config has meta that requires scrolling to top
+	    if (to.matched.some(m => m.meta.scrollToTop)) {
+	      // cords will be used if no selector is provided,
+	      // or if the selector didn't match any element.
+	      position.x = 0
+	      position.y = 0
+	    }
+	    // if the returned position is falsy or an empty object,
+	    // will retain current scroll position.
+	    return position
+	  }
+	}
+	const router = new VueRouter({
+	  mode: 'history',
+	  scrollBehavior,
+	  routes: [
+	    { path: '/', component: Home, meta: { scrollToTop: true }},
+	    { path: '/foo', component: Foo },
+	    { path: '/bar', component: Bar, meta: { scrollToTop: true }}
+	  ]
+	})
+	new Vue({
+	  router,
+	  template: `
+	    <div id="app">
+	      <h1>Scroll Behavior</h1>
+	      <ul>
+	        <li><router-link to="/">/</router-link></li>
+	        <li><router-link to="/foo">/foo</router-link></li>
+	        <li><router-link to="/bar">/bar</router-link></li>
+	        <li><router-link to="/bar#anchor">/bar#anchor</router-link></li>
+	      </ul>
+	      <router-view class="view"></router-view>
+	    </div>
+	  `
+	}).$mount('#app')
+</script>
+</body>
+</html>

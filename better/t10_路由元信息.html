@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>路由元信息</title>
+	<script src="../vue2.js"></script>
+	<script src="../vue-router.js"></script>
+	<script>
+/*
+定义路由的时候可以配置 meta 字段：
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/foo',
+      component: Foo,
+      children: [
+        {
+          path: 'bar',
+          component: Bar,
+          // a meta field
+          meta: { requiresAuth: true }
+        }
+      ]
+    }
+  ]
+})
+*/
+/*
+routes 配置中的每个路由对象为 路由记录。路由记录可以是嵌套的，当一个路由匹配成功后，他可能匹配多个路由记录
+根据上面的路由配置，/foo/bar 这个 URL 将会匹配父路由记录以及子路由记录。
+一个路由匹配到的所有路由记录会暴露为 $route 对象（还有在导航钩子中的 route 对象）的 $route.matched 数组。
+需要遍历 $route.matched 来检查路由记录中的 meta 字段。
+下面例子展示在全局导航钩子中检查 meta 字段：
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!auth.loggedIn()) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // 确保一定要调用 next()
+  }
+})
+*/
+	</script>
+</head>
+<body>
+<div id="app">
+  <!-- 渲染最高级路由匹配到的组件 -->
+    <router-link to="/foo">Go to Foo</router-link>
+    <router-link to="/foo/bar">Go to Bar</router-link>
+  	<router-view></router-view>
+</div>
+<script>
+
+	const Foo = { template: '<div>Foo<router-view></router-view></div>' }
+	const Bar = { template: '<div>Bar</div>' }
+	const login = { template: '<div>login</div>' }
+	const router = new VueRouter({
+	  routes: [
+	    {
+	      path: '/foo',
+	      component: Foo,
+	      children: [
+	        {
+	          path: 'bar',
+	          component: Bar,
+	          // a meta field
+	          meta: { requiresAuth: true }
+	        }
+	      ]
+	    }
+	  ]
+	})
+	const app = new Vue({
+	  router
+	}).$mount('#app')
+	router.beforeEach((to, from, next) => {
+	  if (to.matched.some(record => record.meta.requiresAuth)) {
+	    // this route requires auth, check if logged in
+	    // if not, redirect to login page.
+	    if (true) {
+	      next({
+	        path: '/login',
+	        query: { redirect: to.fullPath }
+	      })
+	    } else {
+	      next()
+	    }
+	  } else {
+	    next() // 确保一定要调用 next()
+	  }
+	})
+</script>
+</body>
+</html>
